@@ -1,0 +1,81 @@
+/* styles/BountyForm.module.css */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.heading {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    max-width: 500px;
+}
+
+.input,
+.textarea {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #1d4ed8;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: 70vh;
+    padding: 1rem;
+}
+
+.splineWrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1100%;
+    padding-top: 2rem;
+}
+
+.splineWrapper iframe {
+    width: 600px;  /* Increase this for wider */
+    height: 600px; /* Increase this for taller */
+    max-width: 800%;
+    border: none;
+}
+

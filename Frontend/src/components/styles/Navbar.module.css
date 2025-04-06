@@ -1,0 +1,50 @@
+.nav {
+    background-color: black;
+    color: white;
+    padding: 1rem 1.5rem;
+    margin-right: -550px;
+    margin-left: -550px;
+    margin-top: -33px;
+  }
+  
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .link {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    color: #d1d5db; /* Tailwind gray-300 */
+  }
+  
+  .button {
+    background-color: white;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+  }
+  

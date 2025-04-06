@@ -1,0 +1,7 @@
+#canvas3d{
+    width: 650px;
+    height: 650px;
+}
+.cube{
+    display: block;
+}

@@ -1,0 +1,137 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  min-height: 100vh;
+
+  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(to top right, #111827, #1f2937);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  margin: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.slider {
+  position: relative;
+  height: 370px;
+  overflow: hidden;
+}
+
+.item {
+  position: absolute;
+  width: 280px;
+  height: 330px;
+  border-radius: 12px;
+  padding: 20px;
+  left: calc(50% - 140px);
+  top: 0;
+  transition: all 0.5s ease;
+  opacity: 0;
+  z-index: 0;
+}
+
+.dark-card {
+  background: #111827;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.bounty-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.bounty-desc {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  text-align: justify;
+  color: #d1d5db;
+}
+
+.reward {
+  margin-top: 0.75rem;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.company {
+  color: #3b82f6;
+}
+
+.deadline {
+  color: #ef4444;
+}
+
+.github-link {
+  display: block;
+  margin-top: 10px;
+  color: #facc15;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+#next,
+#prev {
+  position: absolute;
+  top: 40%;
+  color: white;
+  background: transparent;
+  border: none;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.2s;
+}
+
+#next:hover,
+#prev:hover {
+  transform: scale(1.2);
+}
+
+#prev {
+  left: 20px;
+}
+
+#next {
+  right: 20px;
+}
+.extra-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .btn-secondary {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #1d4ed8;
+  }
+  
