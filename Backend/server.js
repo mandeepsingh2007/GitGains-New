@@ -10,6 +10,9 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require("dotenv");
 const bountyRoutes = require("./routes/bountyRoutes");
 const { ethers } = require("ethers");
+const OpenAI = require("openai");
+const axios = require("axios");
+
 
 
 dotenv.config();
@@ -109,18 +112,74 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY; // Private key of 0x0fEb...
 const provider = new ethers.JsonRpcProvider(INFURA_SEPOLIA_URL);
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
-const receiver = "0xa8fF7FC037a351D68f13322B53B45BDfc2C74DF8"; // Developer wallet
+const receiver = "0x0fEb783623448bb6baed90b93455e30123e896C8"; // Developer wallet
+
+// Init Function Network AI client
+const client = new OpenAI({
+  apiKey: process.env.FXN_API_KEY,
+  baseURL: 'https://api.function.network/v1',
+});
 
 app.post("/api/contributions/webhook", async (req, res) => {
   try {
     const { action, pull_request } = req.body;
-
     if (!pull_request) return res.status(400).json({ message: "Invalid payload" });
 
-    const { id, title, html_url, user, state, merged_at, created_at } = pull_request;
+    const { id, title, html_url, user, state, merged_at, created_at, url: prUrl } = pull_request;
     const username = user.login;
 
-    if (merged_at) {
+    if (!state) {
+      console.log(`❌ PR #${id} not merged.`);
+      return res.status(200).json({ message: "PR not merged" });
+    }
+
+    // Step 1: Fetch PR diff
+    const diffRes = await axios.get(`${prUrl}.diff`, {
+      headers: {
+        Accept: "application/vnd.github.v3.diff"
+      },
+      responseType: "text"
+    });
+
+    const prDiff = typeof diffRes.data === "string" ? diffRes.data : String(diffRes.data);
+    // Step 2: Fetch bounty info from your DB (mocked for now)
+    const bounty = {
+      title: "Implement User Profile Page with Editable Information",
+      description: "Enhance the ChatMingle application by adding a user profile page that allows users to view and update their personal information.",
+      githubLink: "https://github.com/mandeepsingh2007/ChatMingle",
+      reward: "0.01",
+    };
+
+    // Step 3: Ask AI to verify if PR solves bounty
+    const aiResponse = await client.chat.completions.create({
+      model: 'meta/llama-3.1-70b-instruct',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful assistant that verifies if a GitHub pull request solves a specific issue described in a bounty.',
+        },
+        {
+          role: 'user',
+          content: `Here is the bounty:\nTitle: ${bounty.title}\nDescription: ${bounty.description}`,
+        },
+        {
+          role: 'user',
+          content: `Here is the PR code diff:\n${prDiff}`,
+        },
+        {
+          role: 'user',
+          content: `Does this PR fully and correctly implement the bounty? Respond with "yes" or "no" and a short reason.`,
+        },
+      ],
+    });
+
+    const aiAnswer = aiResponse.choices[0].message.content.trim().toLowerCase();
+    console.log(`🤖 AI Response: ${aiAnswer}`);
+
+    const isApproved = aiAnswer.includes("yes");
+
+    if (isApproved) {
+      // ✅ Update DB records
       await PullRequest.findOneAndUpdate(
         { prId: id },
         {
@@ -141,35 +200,21 @@ app.post("/api/contributions/webhook", async (req, res) => {
         { upsert: true, new: true }
       );
 
-      console.log(`✅ PR #${id} merged by ${username}. Contributions updated.`);
-
-      // 💸 ETH transfer logic
+      // 💸 Send ETH reward
       const tx = await signer.sendTransaction({
         to: receiver,
-        value: ethers.parseEther("0.01"), // change the amount as needed
+        value: ethers.parseEther("0.01"),
       });
 
       await tx.wait();
       console.log(`🚀 Sent 0.01 Sepolia ETH to ${receiver}. Tx Hash: ${tx.hash}`);
     } else {
-      console.log(`❌ PR #${id} is not merged. No contribution update.`);
+      console.log(`❌ PR #${id} did not pass AI verification. No ETH sent.`);
     }
 
     res.status(200).json({ message: "Webhook processed" });
   } catch (error) {
     console.error("🚨 Error processing webhook:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-
-// 🔹 Get Leaderboard
-app.get("/api/leaderboard", async (req, res) => {
-  try {
-    const leaderboard = await Leaderboard.find().sort({ contributions: -1 }).limit(10);
-    res.json(leaderboard);
-  } catch (error) {
-    console.error("🚨 Error fetching leaderboard:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
